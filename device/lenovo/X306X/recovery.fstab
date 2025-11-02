@@ -1,0 +1,39 @@
+# TWRP recovery.fstab for Lenovo TB-X306X
+# Generated from boot ramdisk fstab.mt6765
+
+/system_root   ext4   ro,logical    /dev/block/mapper/system
+/system        ext4   ro,logical    /dev/block/mapper/system
+/vendor        ext4   rw,logical    /dev/block/mapper/vendor
+/product       ext4   rw,logical    /dev/block/mapper/product
+
+# Metadata (FBE)
+/metadata      ext4   rw            /dev/block/platform/bootdevice/by-name/md_udc
+
+# Data (userdata) - formattable, file-based encryption
+/data          ext4   rw,latemount,quota,fileencryption=ice,formattable,resize    /dev/block/platform/bootdevice/by-name/userdata
+
+# Cache
+/cache         ext4   rw,formattable    /dev/block/platform/bootdevice/by-name/cache
+
+# Vendor protected partitions
+/mnt/vendor/protect_f ext4 rw    /dev/block/platform/bootdevice/by-name/protect1
+/mnt/vendor/protect_s ext4 rw    /dev/block/platform/bootdevice/by-name/protect2
+
+# Persist
+/mnt/vendor/persist ext4 rw      /dev/block/platform/bootdevice/by-name/persist
+
+# External storage / USB
+/sdcard1       auto   rw         /devices/platform/externdevice*
+/usb_otg       vfat   rw         /devices/platform/mt_usb*
+
+# Boot/recovery (for backup)
+/boot          emmc   rw         /dev/block/platform/bootdevice/by-name/boot
+/recovery      emmc   rw         /dev/block/platform/bootdevice/by-name/recovery
+
+# FRP (optional backup)
+/frp            emmc   rw         /dev/block/platform/bootdevice/by-name/frp
+
+# vbmeta chain (read only)
+vbmeta         emmc   ro         /dev/block/platform/bootdevice/by-name/vbmeta
+vbmeta_system  emmc   ro         /dev/block/platform/bootdevice/by-name/vbmeta_system
+vbmeta_vendor  emmc   ro         /dev/block/platform/bootdevice/by-name/vbmeta_vendor
