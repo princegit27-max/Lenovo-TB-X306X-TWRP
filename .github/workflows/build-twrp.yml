@@ -34,7 +34,7 @@ jobs:
     - name: Sync TWRP source (twrp-12)
       run: |
         mkdir twrp_src && cd twrp_src
-        repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12 --depth=1
+        repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1
         repo sync -c -j4
 
     - name: Copy device tree
