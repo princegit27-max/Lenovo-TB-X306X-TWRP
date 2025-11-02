@@ -1,0 +1,61 @@
+name: Build TWRP for X306X
+
+on:
+  workflow_dispatch:
+    inputs:
+      device_tree:
+        description: 'Include device tree from repo (should be present at device/lenovo/X306X)'
+        required: true
+        default: 'true'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-8-jdk git-core gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib repo python3 python3-pip
+
+    - name: Setup repo tool
+      run: |
+        mkdir -p ~/bin
+        curl -sSLo ~/bin/repo https://storage.googleapis.com/git-repo-downloads/repo
+        chmod a+x ~/bin/repo
+        export PATH=~/bin:$PATH
+        repo --version
+
+    - name: Sync TWRP source (twrp-12)
+      run: |
+        mkdir twrp_src && cd twrp_src
+        repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12 --depth=1
+        repo sync -c -j4
+
+    - name: Copy device tree
+      run: |
+        # Expect that device/lenovo/X306X exists in the repository root
+        cp -r device/lenovo/X306X twrp_src/device/lenovo/ || true
+        ls -la twrp_src/device/lenovo || true
+
+    - name: Build recovery
+      env:
+        PATH: /usr/bin:$PATH
+      run: |
+        cd twrp_src
+        source build/envsetup.sh
+        # lunch target name from device/product; change if different
+        lunch omni_X306X-eng || lunch twrp_X306X-eng || true
+        mka -j$(nproc) recoveryimage || (tail -n 200 out/target/product/X306X/obj/KERNEL_OBJ/.log || true; exit 1)
+
+    - name: Upload artifact
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: recovery-image-X306X
+        path: twrp_src/out/target/product/X306X/recovery.img
