@@ -40,7 +40,7 @@ jobs:
     - name: Copy device tree
       run: |
         # Expect that device/lenovo/X306X exists in the repository root
-        cp -r device/lenovo/X306X twrp_src/device/lenovo/ || true
+        cp -r device/lenovo/amar_row_lte twrp_src/device/lenovo/ || true
         ls -la twrp_src/device/lenovo || true
 
     - name: Build recovery
@@ -50,7 +50,7 @@ jobs:
         cd twrp_src
         source build/envsetup.sh
         # lunch target name from device/product; change if different
-        lunch omni_X306X-eng || lunch twrp_X306X-eng || true
+        lunch omni_amar_row_lte-eng || lunch twrp_amar_row_lte-eng || true
         mka -j$(nproc) recoveryimage || (tail -n 200 out/target/product/X306X/obj/KERNEL_OBJ/.log || true; exit 1)
 
     - name: Upload artifact
@@ -58,4 +58,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: recovery-image-X306X
-        path: twrp_src/out/target/product/X306X/recovery.img
+        path: twrp_src/out/target/product/amar_row_lte/recovery.img
+
