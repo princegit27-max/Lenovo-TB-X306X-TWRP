@@ -1,0 +1,8 @@
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE := device_lenovo_X306X
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)
+LOCAL_MODULE_STEM := device_lenovo_X306X
+include $(BUILD_PREBUILT)
